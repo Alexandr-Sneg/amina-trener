@@ -1,4 +1,3 @@
 # Тренажёр менеджера AMINA
 
-Открывается по ссылке: https://alexandr-sneg.github.io/amina-trener/
-На телефоне ставится как приложение (Поделиться → На экран «Домой»).
+Открывается по ссылке: https://alexandr-sneg.github.io/amina-trener/ — на компьютере и на телефоне.

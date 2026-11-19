@@ -105,7 +105,7 @@ td.num{font-variant-numeric:tabular-nums}
   <header class="top">
     <div>
       <h1>Тренажёр менеджера AMINA</h1>
-      <p class="sub">16 коротких уроков: продукт, МойСклад, продажи. Урок → карточки → тест на 80%.</p>
+      <p class="sub">16 коротких уроков: продукт, МойСклад, продажи. Урок → тест на 80%.</p>
     </div>
     <nav class="nav" aria-label="Разделы">
       <button id="nav-course" aria-pressed="true">Курс</button>
@@ -386,26 +386,12 @@ function renderStage(){
   const l=LESSONS.find(x=>x.id===S.cur), st=document.getElementById("stage");st.replaceChildren();
   st.append(el("div",{},el("div",{class:"eyebrow"},MODS[l.mod]),el("h2",{},`Урок ${l.id}. ${l.title}`)));
   const tabs=el("div",{class:"tabs",role:"tablist"});
-  [["lesson","Обучалка"],["cards","Карточки"],["quiz","Тест"]].forEach(([k,t])=>tabs.append(el("button",{role:"tab","aria-selected":S.tab===k?"true":"false",id:"tab-"+k,onclick:()=>{S.tab=k;S.cardIdx=0;S.cardBack=false;renderStage()}},t)));
+  [["lesson","Обучалка"],["quiz","Тест"]].forEach(([k,t])=>tabs.append(el("button",{role:"tab","aria-selected":S.tab===k?"true":"false",id:"tab-"+k,onclick:()=>{S.tab=k;S.cardIdx=0;S.cardBack=false;renderStage()}},t)));
   st.append(tabs);
   if(S.tab==="lesson"){
     st.append(el("div",{class:"lesson"},el("ul",{},l.text.map(t=>el("li",{},t)))),
       el("div",{class:"tip"},el("strong",{},"Запомни: "),l.tip),
-      el("div",{class:"row",style:"justify-content:flex-start"},el("button",{class:"btn primary",onclick:()=>{S.tab="cards";renderStage()}},"К карточкам")));
-  } else if(S.tab==="cards"){
-    const deck=l.cards, i=S.cardIdx%deck.length, c=deck[i];
-    const knownSet=S.known[l.id]||(S.known[l.id]=new Set());
-    const card=el("div",{class:"card",tabindex:"0",role:"button","aria-label":"Перевернуть карточку",onclick:()=>{S.cardBack=!S.cardBack;renderStage()},onkeydown:e=>{if(e.key===" "||e.key==="Enter"){e.preventDefault();S.cardBack=!S.cardBack;renderStage()}}},
-      S.cardBack?el("div",{class:"back"},c[1]):el("div",{class:"face"},c[0]),
-      el("small",{},S.cardBack?"Ответ":"Нажми, чтобы перевернуть"));
-    const next=k=>{if(k) knownSet.add(i); else knownSet.delete(i); S.cardBack=false;
-      let j=i; for(let s=1;s<=deck.length;s++){const t=(i+s)%deck.length; if(!knownSet.has(t)){j=t;break}} S.cardIdx=j; renderStage();};
-    const all=knownSet.size===deck.length;
-    st.append(el("div",{class:"flash"},
-      el("div",{class:"note"},`Карточка ${i+1} из ${deck.length} · знаю: ${knownSet.size}`),
-      all?el("div",{class:"verdict pass"},"Все карточки в «знаю». Можно сдавать тест."):card,
-      all?el("div",{class:"row"},el("button",{class:"btn",onclick:()=>{S.known[l.id]=new Set();S.cardIdx=0;renderStage()}},"Пройти ещё раз"),el("button",{class:"btn primary",onclick:()=>{S.tab="quiz";renderStage()}},"К тесту"))
-        :el("div",{class:"row"},el("button",{class:"btn",onclick:()=>next(false)},"Ещё повторю"),el("button",{class:"btn primary",onclick:()=>next(true)},"Знаю"))));
+      el("div",{class:"row",style:"justify-content:flex-start"},el("button",{class:"btn primary",onclick:()=>{S.tab="quiz";renderStage()}},"К тесту")));
   } else {
     st.append(quizBlock(l.quiz,`quiz-${l.id}`,score=>{
       const prev=S.results[l.id]; const best=Math.max(score,prev?prev.best:0);
